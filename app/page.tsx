@@ -2,8 +2,27 @@
 
 import Link from "next/link";
 import { Video, UserPlus, LogIn, Sparkles, Share2, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { apiClient } from "@/lib/api-client";
+import { IVideo } from "@/models/Video";
+import VideoFeed from "./components/VideoFeed";
 
 export default function Home() {
+  const [videos, setVideos] = useState<IVideo[]>([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const data = await apiClient.getVideos();
+        setVideos(data as IVideo[]);
+      } catch (error) {
+        console.error("Error fetching videos:", error);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
       <main className="container mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)]">
@@ -17,16 +36,6 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
-            <Link href="/login" className="group relative px-8 py-4 bg-indigo-600 hover:bg-indigo-700 rounded-full font-semibold text-lg text-white transition-all duration-200 shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 hover:-translate-y-1 flex items-center gap-2">
-              <LogIn className="w-5 h-5" />
-              Sign In
-            </Link>
-
-            <Link href="/register" className="group relative px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-full font-semibold text-lg text-gray-900 dark:text-white transition-all duration-200 hover:-translate-y-1 flex items-center gap-2">
-              <UserPlus className="w-5 h-5" />
-              Register
-            </Link>
-
             <Link href="/upload" className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-full font-semibold text-lg text-white transition-all duration-200 shadow-lg shadow-purple-600/25 hover:shadow-purple-600/40 hover:-translate-y-1 flex items-center gap-2">
               <Video className="w-5 h-5" />
               Upload Reel
@@ -72,6 +81,12 @@ export default function Home() {
               </p>
             </Link>
           ))}
+        </div>
+
+        {/* Recent Videos Section */}
+        <div className="mt-24 w-full max-w-6xl">
+          <h2 className="text-3xl font-bold mb-8 text-center">Recent Uploads</h2>
+          <VideoFeed videos={videos} />
         </div>
       </main>
     </div>

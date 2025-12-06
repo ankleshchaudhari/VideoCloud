@@ -81,7 +81,7 @@ export default function VideoUploadForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 glass p-8 rounded-2xl border border-gray-700/50">
+    <form onSubmit={handleSubmit} className="space-y-6 glass p-8 rounded-2xl border !border-gray-300 dark:!border-gray-700/50 shadow-[0_0_20px_rgba(0,0,0,0.1)]">
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex items-center gap-3 text-red-400 text-sm animate-in fade-in">
@@ -91,32 +91,32 @@ export default function VideoUploadForm() {
       )}
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Video Title</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Video Title</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="block w-full px-4 py-3 border border-gray-700 rounded-xl bg-gray-800/50 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+          className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
           placeholder="Enter a catchy title"
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Description</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={4}
-          className="block w-full px-4 py-3 border border-gray-700 rounded-xl bg-gray-800/50 text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all resize-none"
+          className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all resize-none"
           placeholder="What is this video about?"
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300">Upload Video</label>
-        <div className="relative border-2 border-dashed border-gray-700 rounded-xl p-6 hover:border-indigo-500/50 transition-colors bg-gray-800/30">
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Video</label>
+        <div className="relative border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-6 hover:border-indigo-500/50 transition-colors bg-gray-50 dark:bg-gray-800/30">
           {!fileData ? (
             <div className="flex flex-col items-center justify-center space-y-4">
               {uploading ? (
