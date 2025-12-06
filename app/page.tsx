@@ -59,9 +59,9 @@ export default function Home() {
             <Link
               key={index}
               href={feature.href}
-              className="glass p-8 rounded-2xl border border-gray-200 dark:border-gray-700/50 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer group block"
+              className="glass p-8 rounded-2xl border !border-gray-300 dark:!border-gray-700/50 hover:border-indigo-500/50 dark:hover:border-indigo-400/50 transition-all duration-300 hover:-translate-y-1 shadow-[0_0_20px_rgba(0,0,0,0.1)] hover:shadow-xl cursor-pointer group block flex flex-col items-center text-center"
             >
-              <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-xl w-fit group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 transition-colors">
+              <div className="mb-4 p-3 rounded-xl w-fit group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 transition-colors">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
