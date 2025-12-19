@@ -108,99 +108,160 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
-      <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Home
-        </Link>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
+      <main className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-8 group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Back to Home
+          </Link>
 
-        <div className="max-w-4xl mx-auto">
-          {/* Profile Header - GitHub style */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-32"></div>
-            <div className="px-6 pb-6 -mt-16">
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                <div className="relative">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                    id="profile-photo-upload"
-                  />
-                  <label
-                    htmlFor="profile-photo-upload"
-                    className="cursor-pointer relative group block"
-                  >
-                    {profile?.profilePhoto ? (
-                      <div className="relative">
-                        <img
-                          src={profile.profilePhoto}
-                          alt="Profile"
-                          className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-lg"
-                        />
-                        <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity border-4 border-white dark:border-gray-800">
-                          <Upload className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-32 h-32 rounded-full bg-indigo-500 flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg relative group">
-                        <UserIcon className="w-16 h-16 text-white" />
-                        <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity border-4 border-white dark:border-gray-800">
-                          <Upload className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    )}
-                    {uploadingPhoto && (
-                      <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center border-4 border-white dark:border-gray-800">
-                        <Loader2 className="w-8 h-8 text-white animate-spin" />
-                      </div>
-                    )}
-                  </label>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Profile Card */}
+            <div className="lg:col-span-1">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden sticky top-24">
+                <div className="h-32 relative">
+                  <div className="absolute inset-0"></div>
                 </div>
 
-                <div className="flex-1 pt-4 sm:pt-0">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {profile?.name || session.user?.email?.split("@")[0] || "User"}
-                  </h1>
-                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-                    {session.user?.email || "N/A"}
-                  </p>
-                  <button
-                    onClick={handleMyLibrary}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
-                  >
-                    <Library className="w-5 h-5" />
-                    My Library
-                  </button>
+                <div className="px-6 pb-8">
+                  <div className="relative -mt-16 mb-6 flex justify-center">
+                    <div className="relative">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                        id="profile-photo-upload"
+                      />
+                      <label
+                        htmlFor="profile-photo-upload"
+                        className="cursor-pointer relative group block"
+                      >
+                        {profile?.profilePhoto ? (
+                          <div className="relative">
+                            <img
+                              src={profile.profilePhoto}
+                              alt="Profile"
+                              className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-2xl"
+                            />
+                            <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 backdrop-blur-sm border-4 border-white dark:border-gray-800">
+                              <Upload className="w-6 h-6 text-white" />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-2xl relative group">
+                            <span className="text-4xl font-bold text-white">
+                              {(profile?.name?.[0] || session.user?.email?.[0] || "U").toUpperCase()}
+                            </span>
+                            <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-300 backdrop-blur-sm border-4 border-white dark:border-gray-800">
+                              <Upload className="w-6 h-6 text-white" />
+                            </div>
+                          </div>
+                        )}
+                        {uploadingPhoto && (
+                          <div className="absolute inset-0 rounded-full bg-black/60 flex items-center justify-center border-4 border-white dark:border-gray-800 z-10">
+                            <Loader2 className="w-8 h-8 text-white animate-spin" />
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="text-center space-y-2">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {profile?.name || session.user?.email?.split("@")[0] || "User"}
+                    </h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                      {session.user?.email || "N/A"}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-700">
+                    <button
+                      onClick={handleMyLibrary}
+                      className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-300 flex items-center justify-center gap-2 group"
+                    >
+                      <Library className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      My Library
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Profile Details Section */}
-          <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-              Profile Information
-            </h2>
-            <div className="space-y-4">
-              <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Name</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {profile?.name || session.user?.email?.split("@")[0] || "User"}
-                </p>
+            {/* Right Column: Details & Stats */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Account Overview */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                  <UserIcon className="w-5 h-5 text-indigo-500" />
+                  Account Overview
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                      Display Name
+                    </p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                      {profile?.name || session.user?.email?.split("@")[0] || "User"}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                      Email Address
+                    </p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white break-all">
+                      {session.user?.email || "N/A"}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                      Member Since
+                    </p>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                      {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                      Account Status
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                      <p className="text-lg font-medium text-gray-900 dark:text-white">
+                        Active
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Email</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {session.user?.email || "N/A"}
-                </p>
+              {/* Recent Activity Placeholder */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                  <Library className="w-5 h-5 text-purple-500" />
+                  Recent Activity
+                </h2>
+                <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No recent activity to show.
+                  </p>
+                  <button
+                    onClick={() => router.push('/upload')}
+                    className="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                  >
+                    Upload your first video
+                  </button>
+                </div>
               </div>
             </div>
           </div>
