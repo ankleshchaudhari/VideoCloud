@@ -3,6 +3,7 @@
 import { ImageKitProvider } from "imagekitio-next";
 import { SessionProvider } from "next-auth/react"
 import { ThemeProvider } from "next-themes";
+import { NotificationProvider } from "./Notification";
 
 const urlEndPoint = process.env.NEXT_PUBLIC_URL_ENDPOINT!;
 const publicKey = process.env.NEXT_PUBLIC_PUBLIC_KEY!;
@@ -31,7 +32,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 authenticator={authenticator}
             >
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-                    {children}
+                    <NotificationProvider>
+                        {children}
+                    </NotificationProvider>
                 </ThemeProvider>
             </ImageKitProvider>
         </SessionProvider>

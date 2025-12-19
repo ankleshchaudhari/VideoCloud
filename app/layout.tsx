@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./components/Providers";
 import { ThemeToggle } from "./components/ThemeToggle";
+import ProfileIcon from "./components/ProfileIcon";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +32,7 @@ export default function RootLayout({
       >
         <Providers>
           <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium hover:underline text-gray-700 dark:text-gray-200">
-              Login
-            </Link>
+            <ProfileIcon />
             <ThemeToggle />
           </div>
           {children}
