@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { IKUpload } from "imagekitio-next";
+import { IKUpload, IKVideo } from "imagekitio-next";
 import { Loader2, UploadCloud, CheckCircle, AlertCircle, FileVideo } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -145,21 +145,29 @@ export default function VideoUploadForm() {
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-between p-2">
-              <div className="flex items-center space-x-3">
-                <FileVideo className="w-8 h-8 text-indigo-500" />
-                <div className="text-sm">
-                  <p className="font-medium text-gray-200">Upload Complete</p>
-                  <p className="text-gray-500 truncate max-w-[200px]">{fileData.filePath}</p>
-                </div>
+            <div className="w-full rounded-xl overflow-hidden space-y-4">
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
+                <IKVideo
+                  src={fileData.url}
+                  controls={true}
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <button
-                type="button"
-                onClick={() => setFileData(null)}
-                className="text-gray-400 hover:text-red-400 transition-colors"
-              >
-                Remove
-              </button>
+              <div className="flex items-center justify-between p-2">
+                <div className="flex items-center space-x-3">
+                  <FileVideo className="w-5 h-5 text-indigo-500" />
+                  <span className="text-sm text-gray-500 truncate max-w-[200px]">
+                    {fileData.filePath}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setFileData(null)}
+                  className="text-sm text-red-500 hover:text-red-600 transition-colors font-medium"
+                >
+                  Remove Video
+                </button>
+              </div>
             </div>
           )}
         </div>
