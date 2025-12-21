@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { connectionToDatabase } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
-//import GithubProvider from "next-auth/providers/github";
 
 export const authOptions: NextAuthOptions = {
 
@@ -24,7 +23,6 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" }
       },
-
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) {
           throw new Error("Missing Email or Password");
@@ -49,7 +47,9 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: user._id.toString(),
-            email: user.email
+            email: user.email,
+            name: user.name,
+            username: user.username
           }
         }
         catch (error) {
@@ -59,25 +59,26 @@ export const authOptions: NextAuthOptions = {
       }
     })
   ],
-
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        // @ts-ignore
+        token.username = user.username;
       }
-
       return token;
     },
-
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        // @ts-ignore
+        session.user.username = token.username as string;
       }
-
       return session;
     }
   },
-
   pages: {
     signIn: "/login",
     error: "/login",

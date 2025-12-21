@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
 export interface IUser {
   email: string;
   password: string;
-  name?: string;
+  name: string;
+  username: string;
   profilePhoto?: string;
   _id: mongoose.Types.ObjectId;
   createdAt?: Date;
@@ -17,7 +18,8 @@ const userSchema = new Schema<IUser>(
   {
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    name: { type: String, required: false },
+    name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     profilePhoto: { type: String, required: false },
   },
   {

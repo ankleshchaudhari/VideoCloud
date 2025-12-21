@@ -186,7 +186,7 @@ export default function ProfilePage() {
                   {profile?.name || session.user?.email?.split("@")[0] || "User"}
                 </h1>
                 <p className="text-xl text-gray-500 dark:text-gray-400 font-light">
-                  {session.user?.email?.split("@")[0] || "username"}
+                  {profile?.username || (session.user as any)?.username || session.user?.email?.split("@")[0] || "username"}
                 </p>
               </div>
 
