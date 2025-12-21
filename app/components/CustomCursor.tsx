@@ -58,6 +58,23 @@ export default function CustomCursor() {
         .custom-cursor-active, .custom-cursor-active * {
           cursor: none !important;
         }
+        /* Force hide cursor on video controls */
+        .custom-cursor-active video,
+        .custom-cursor-active video::-webkit-media-controls,
+        .custom-cursor-active video::-webkit-media-controls-overlay-enclosure,
+        .custom-cursor-active video::-webkit-media-controls-enclosure,
+        .custom-cursor-active video::-webkit-media-controls-panel,
+        .custom-cursor-active video::-webkit-media-controls-play-button,
+        .custom-cursor-active video::-webkit-media-controls-timeline,
+        .custom-cursor-active video::-webkit-media-controls-current-time-display,
+        .custom-cursor-active video::-webkit-media-controls-time-remaining-display,
+        .custom-cursor-active video::-webkit-media-controls-mute-button,
+        .custom-cursor-active video::-webkit-media-controls-toggle-closed-captions-button,
+        .custom-cursor-active video::-webkit-media-controls-volume-slider,
+        .custom-cursor-active video::-webkit-media-controls-fullscreen-button,
+        .custom-cursor-active video::-webkit-media-controls-overflow-button {
+          cursor: none !important;
+        }
       `}</style>
             {isHovering && (
                 <div

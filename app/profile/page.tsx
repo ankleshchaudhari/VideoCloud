@@ -138,7 +138,7 @@ export default function ProfilePage() {
           <div className="md:col-span-4 lg:col-span-3 space-y-6">
             <div className="flex flex-col items-start">
               {/* Profile Picture */}
-              <div className="relative group w-full max-w-[296px] aspect-square mb-4">
+              <div className="relative group w-full max-w-[296px] aspect-square mb-4 ml-5 md:ml-1">
                 <input
                   type="file"
                   ref={fileInputRef}
@@ -181,7 +181,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Name and Username */}
-              <div className="w-full mb-6">
+              <div className="w-full mb-6 ml-5 md:ml-3">
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
                   {profile?.name || session.user?.email?.split("@")[0] || "User"}
                 </h1>
