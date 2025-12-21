@@ -14,7 +14,7 @@ export default function Home() {
     const fetchVideos = async () => {
       try {
         const data = await apiClient.getVideos();
-        setVideos(data as IVideo[]);
+        setVideos(data.slice(0, 4));
       } catch (error) {
         console.error("Error fetching videos:", error);
       }

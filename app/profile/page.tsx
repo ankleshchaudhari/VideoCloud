@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient, UserProfile } from "@/lib/api-client";
 import { useNotification } from "@/app/components/Notification";
-import { User as UserIcon, Library, Upload, Loader2, ArrowLeft } from "lucide-react";
+import { User as UserIcon, Library, Upload, Loader2, ArrowLeft, Edit2, Check, X } from "lucide-react";
 import { upload } from "@imagekit/next";
 import Link from "next/link";
 
@@ -17,6 +17,10 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Name editing state
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState("");
 
   useEffect(() => {
     if (status === "loading") return;
@@ -32,6 +36,7 @@ export default function ProfilePage() {
         setLoading(true);
         const userProfile = await apiClient.getUserProfile();
         setProfile(userProfile);
+        setNewName(userProfile?.name || session.user?.name || "");
       } catch (error) {
         showNotification("Failed to load profile", "error");
       } finally {
@@ -91,6 +96,24 @@ export default function ProfilePage() {
     }
   };
 
+  const handleNameSave = async () => {
+    if (!newName.trim()) {
+      showNotification("Name cannot be empty", "error");
+      return;
+    }
+
+    try {
+      const updatedProfile = await apiClient.updateUserProfile({
+        name: newName,
+      });
+      setProfile(updatedProfile);
+      setIsEditingName(false);
+      showNotification("Display name updated successfully", "success");
+    } catch (error) {
+      showNotification("Failed to update display name", "error");
+    }
+  };
+
   const handleMyLibrary = () => {
     router.push("/my-library");
   };
@@ -109,98 +132,183 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
-      <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Home
-        </Link>
+      <main className="container mx-auto px-4 py-8 md:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mt-20">
+          {/* Left Column: Profile Sidebar (Matches GitHub style) */}
+          <div className="md:col-span-4 lg:col-span-3 space-y-6">
+            <div className="flex flex-col items-start">
+              {/* Profile Picture */}
+              <div className="relative group w-full max-w-[296px] aspect-square mb-4 ml-5 md:ml-1">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                  id="profile-photo-upload"
+                />
+                <label
+                  htmlFor="profile-photo-upload"
+                  className="cursor-pointer block w-full h-full relative rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm"
+                >
+                  {profile?.profilePhoto ? (
+                    <img
+                      src={profile.profilePhoto}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      <span className="text-6xl font-medium text-gray-400">
+                        {(profile?.name?.[0] || session.user?.email?.[0] || "U").toUpperCase()}
+                      </span>
+                    </div>
+                  )}
 
-        <div className="max-w-4xl mx-auto">
-          {/* Profile Header - GitHub style */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 h-32"></div>
-            <div className="px-6 pb-6 -mt-16">
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-                <div className="relative">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                    id="profile-photo-upload"
-                  />
-                  <label
-                    htmlFor="profile-photo-upload"
-                    className="cursor-pointer relative group block"
-                  >
-                    {profile?.profilePhoto ? (
-                      <div className="relative">
-                        <img
-                          src={profile.profilePhoto}
-                          alt="Profile"
-                          className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-lg"
-                        />
-                        <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity border-4 border-white dark:border-gray-800">
-                          <Upload className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-32 h-32 rounded-full bg-indigo-500 flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-lg relative group">
-                        <UserIcon className="w-16 h-16 text-white" />
-                        <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity border-4 border-white dark:border-gray-800">
-                          <Upload className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    )}
-                    {uploadingPhoto && (
-                      <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center border-4 border-white dark:border-gray-800">
-                        <Loader2 className="w-8 h-8 text-white animate-spin" />
-                      </div>
-                    )}
-                  </label>
-                </div>
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <div className="text-white flex flex-col items-center gap-2">
+                      <Upload className="w-8 h-8" />
+                      <span className="text-sm font-medium">Change photo</span>
+                    </div>
+                  </div>
 
-                <div className="flex-1 pt-4 sm:pt-0">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    {profile?.name || session.user?.email?.split("@")[0] || "User"}
-                  </h1>
-                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-                    {session.user?.email || "N/A"}
-                  </p>
-                  <button
-                    onClick={handleMyLibrary}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium flex items-center gap-2 transition-colors"
-                  >
-                    <Library className="w-5 h-5" />
-                    My Library
-                  </button>
-                </div>
+                  {uploadingPhoto && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+                      <Loader2 className="w-10 h-10 text-white animate-spin" />
+                    </div>
+                  )}
+                </label>
               </div>
+
+              {/* Name and Username */}
+              <div className="w-full mb-6 ml-5 md:ml-3">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                  {profile?.name || session.user?.email?.split("@")[0] || "User"}
+                </h1>
+                <p className="text-xl text-gray-500 dark:text-gray-400 font-light">
+                  {profile?.username || (session.user as any)?.username || session.user?.email?.split("@")[0] || "username"}
+                </p>
+              </div>
+
+              {/* Action Button */}
+              <button
+                onClick={handleMyLibrary}
+                className="w-full py-1.5 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-md font-medium border border-gray-300 dark:border-gray-600 transition-colors text-sm mb-6"
+              >
+                My Library
+              </button>
             </div>
           </div>
 
-          {/* Profile Details Section */}
-          <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-              Profile Information
-            </h2>
-            <div className="space-y-4">
-              <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Name</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {profile?.name || session.user?.email?.split("@")[0] || "User"}
-                </p>
-              </div>
+          {/* Right Column: Main Content */}
+          <div className="md:col-span-8 lg:col-span-9 space-y-6">
+            {/* Account Overview */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <UserIcon className="w-5 h-5 text-indigo-500" />
+                Account Overview
+              </h2>
 
-              <div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Email</p>
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {session.user?.email || "N/A"}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Display Name with Edit Functionality */}
+                <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30 group relative">
+                  <div className="flex justify-between items-start mb-1">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Display Name
+                    </p>
+                    {!isEditingName && (
+                      <button
+                        onClick={() => {
+                          setNewName(profile?.name || "");
+                          setIsEditingName(true);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                        title="Edit Display Name"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {isEditingName ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <input
+                        type="text"
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        className="flex-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        autoFocus
+                      />
+                      <button
+                        onClick={handleNameSave}
+                        className="p-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300"
+                        title="Save"
+                      >
+                        <Check className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setIsEditingName(false)}
+                        className="p-1 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        title="Cancel"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                      {profile?.name || session.user?.email?.split("@")[0] || "User"}
+                    </p>
+                  )}
+                </div>
+
+                <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    Email Address
+                  </p>
+                  <p className="text-lg font-medium text-gray-900 dark:text-white break-all">
+                    {session.user?.email || "N/A"}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    Member Since
+                  </p>
+                  <p className="text-lg font-medium text-gray-900 dark:text-white">
+                    {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 transition-colors hover:border-indigo-200 dark:hover:border-indigo-500/30">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                    Account Status
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <p className="text-lg font-medium text-gray-900 dark:text-white">
+                      Active
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Activity Placeholder */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                <Library className="w-5 h-5 text-purple-500" />
+                Recent Activity
+              </h2>
+              <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
+                <p className="text-gray-500 dark:text-gray-400">
+                  No recent activity to show.
                 </p>
+                <button
+                  onClick={() => router.push('/upload')}
+                  className="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                >
+                  Upload your first video
+                </button>
               </div>
             </div>
           </div>
@@ -209,4 +317,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

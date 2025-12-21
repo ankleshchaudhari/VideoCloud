@@ -6,10 +6,10 @@ import { connectionToDatabase } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
     try {
-        const { email, password } = await request.json()
+        const { email, password, name, username } = await request.json()
 
-        if (!email || !password) {
-            return NextResponse.json({ error: "Email and Password are required" }, { status: 400 })
+        if (!email || !password || !name || !username) {
+            return NextResponse.json({ error: "All fields are required" }, { status: 400 })
         }
 
         //connect to database
@@ -18,10 +18,16 @@ export async function POST(request: NextRequest) {
         const existingUser = await User.findOne({ email })
 
         if (existingUser) {
-            return NextResponse.json({ error: "User already exists" }, { status: 400 });
+            return NextResponse.json({ error: "Email already registered" }, { status: 400 });
         }
 
-        await User.create({ email, password })
+        const existingUsername = await User.findOne({ username })
+
+        if (existingUsername) {
+            return NextResponse.json({ error: "Username already taken" }, { status: 400 });
+        }
+
+        await User.create({ email, password, name, username })
 
         return NextResponse.json({ message: "User Registered Successfully" }, { status: 201 });
     }

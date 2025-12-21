@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./components/Providers";
 import { ThemeToggle } from "./components/ThemeToggle";
 import ProfileIcon from "./components/ProfileIcon";
+import CustomCursor from "./components/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <CustomCursor />
           <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
             <ProfileIcon />
             <ThemeToggle />
