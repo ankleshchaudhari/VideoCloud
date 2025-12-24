@@ -17,10 +17,7 @@ export async function GET() {
 
     await connectionToDatabase();
 
-    // Note: Currently Video model doesn't have userId field
-    // For now, we'll return all videos. In production, you'd want to add userId to Video model
-    // and filter by: await Video.find({ userId: session.user?.id }).sort({ createdAt: -1 }).lean()
-    const videos = await Video.find({}).sort({ createdAt: -1 }).lean();
+    const videos = await Video.find({ userId: session.user.id }).sort({ createdAt: -1 }).lean();
 
     return NextResponse.json(videos);
   } catch (error) {
@@ -30,4 +27,3 @@ export async function GET() {
     );
   }
 }
-

@@ -6,11 +6,15 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/api-client";
 import { IVideo } from "@/models/Video";
 import VideoFeed from "./components/VideoFeed";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
+  const { data: session } = useSession();
   const [videos, setVideos] = useState<IVideo[]>([]);
 
   useEffect(() => {
+    if (!session) return;
+
     const fetchVideos = async () => {
       try {
         const data = await apiClient.getVideos();
@@ -21,7 +25,7 @@ export default function Home() {
     };
 
     fetchVideos();
-  }, []);
+  }, [session]);
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-500">
@@ -84,10 +88,12 @@ export default function Home() {
         </div>
 
         {/* Recent Videos Section */}
-        <div className="mt-24 w-full max-w-6xl">
-          <h2 className="text-3xl font-bold mb-8 text-center">Recent Uploads</h2>
-          <VideoFeed videos={videos} />
-        </div>
+        {session && (
+          <div className="mt-24 w-full max-w-6xl">
+            <h2 className="text-3xl font-bold mb-8 text-center">Recent Uploads</h2>
+            <VideoFeed videos={videos} />
+          </div>
+        )}
       </main>
     </div>
   );
