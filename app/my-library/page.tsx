@@ -73,12 +73,6 @@ export default function MyLibrary() {
                 All your uploaded videos
               </p>
             </div>
-            <Link
-              href="/upload"
-              className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:underline transition-colors"
-            >
-              Upload Video
-            </Link>
           </div>
         </div>
 

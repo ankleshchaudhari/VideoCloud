@@ -58,6 +58,10 @@ class ApiClient {
     });
   }
 
+  async getVideo(id: string) {
+    return this.fetch<IVideo>(`/videos/${id}`);
+  }
+
   async getUserVideos() {
     return this.fetch<IVideo[]>("/user/videos");
   }

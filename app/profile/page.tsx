@@ -4,9 +4,11 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { apiClient, UserProfile } from "@/lib/api-client";
+import { IVideo } from "@/models/Video";
 import { useNotification } from "@/app/components/Notification";
 import { User as UserIcon, Library, Upload, Loader2, ArrowLeft, Edit2, Check, X } from "lucide-react";
 import { upload } from "@imagekit/next";
+import { IKVideo } from "imagekitio-next";
 import Link from "next/link";
 
 export default function ProfilePage() {
@@ -14,6 +16,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const { showNotification } = useNotification();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [videos, setVideos] = useState<IVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +39,8 @@ export default function ProfilePage() {
         setLoading(true);
         const userProfile = await apiClient.getUserProfile();
         setProfile(userProfile);
+        const userVideos = await apiClient.getUserVideos();
+        setVideos(userVideos);
         setNewName(userProfile?.name || session.user?.name || "");
       } catch (error) {
         showNotification("Failed to load profile", "error");
@@ -299,17 +304,42 @@ export default function ProfilePage() {
                 <Library className="w-5 h-5 text-purple-500" />
                 Recent Activity
               </h2>
-              <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
-                <p className="text-gray-500 dark:text-gray-400">
-                  No recent activity to show.
-                </p>
-                <button
-                  onClick={() => router.push('/upload')}
-                  className="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
-                >
-                  Upload your first video
-                </button>
-              </div>
+
+              {videos.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {videos.map((video) => (
+                    <Link
+                      href={`/videos/${video._id}`}
+                      key={video._id?.toString()}
+                      className="relative group aspect-square rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-900"
+                    >
+                      <IKVideo
+                        src={video.videoUrl}
+                        transformation={[{ height: "400", width: "400" }]}
+                        controls={false}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/20 backdrop-blur-sm p-2 rounded-full">
+                          <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-0.5" />
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No recent activity to show.
+                  </p>
+                  <button
+                    onClick={() => router.push('/upload')}
+                    className="mt-4 text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                  >
+                    Upload your first video
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
